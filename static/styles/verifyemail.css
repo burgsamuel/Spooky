@@ -1,0 +1,123 @@
+body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    text-align: center;
+    color: rgb(250, 250, 250);
+    background-image: url(395656.jpg);
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}
+
+header {
+    border: 2px solid rgba(255, 255, 255, 0.012);
+    text-align: left;
+    margin-left: 25px;
+    margin-right: 25px;
+    border-radius: 15px;
+    padding-top: 0px;
+    padding-bottom: 2px;
+    transition: all .3s;
+}
+
+
+h1 {
+    text-shadow: 3px 3px 3px rgba(235, 98, 35, 0.748);
+    margin-top: 10px;
+    margin-bottom: 20px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    line-height: 1.5;
+
+}
+
+
+header button {
+    border: 1px solid rgba(255, 255, 255, 0.612);
+    margin: 3px;
+    margin-left: 5px;
+    font-size: 0.8rem;
+    width: 100px;
+    height: 30px;
+    border-radius: 20px;
+    box-shadow: 4px 4px 5px rgba(0, 0, 0, 0.8);
+    background-color: rgba(0, 0, 0, 0.94);
+    color: rgb(227, 226, 226);
+    text-shadow: 3px 3px 3px hsla(0, 1%, 55%, 0.216);
+    transition: all 0.3s;
+  }
+  
+  header button:hover {
+    cursor: pointer;
+    background-color: rgba(0, 0, 0, 0.8);
+    box-shadow: none;
+  }
+
+  #verifyemail {
+    width: 95%;
+    background-color: rgba(0, 0, 0, 0.864);
+    padding-top: 20px;
+    padding-bottom: 20px;
+    border-radius: 10px;
+    margin: 5px;
+    box-shadow: 5px 5px 5px rgba(235, 98, 35, 0.442);
+    text-shadow: 3px 3px 3px rgba(235, 98, 35, 0.748)
+}
+
+#verifyemail p {
+    padding: 10px 10px;
+}
+
+#codefield {
+    margin: 10px;
+    font-weight: 600;
+}
+
+
+#codefield input {
+    height: 20px;
+    padding: 10px 20px;
+    width: 100px;
+    border-radius: 20px;
+    font-size: 1rem;
+    outline: none;
+    transition: all .8s;
+}
+
+#codefield input:focus {
+    border: none;
+    box-shadow: 5px 5px 5px rgba(235,97,35);
+}
+
+#form-button-div {
+    display: flex;
+    justify-content: space-evenly;
+    margin-top: 15px;
+}
+
+#form-button-div button{
+    height: 35px;
+    width: 120px;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: rgb(0, 0, 0);
+    border-radius: 15px;
+    border: 1px solid rgba(235,97,35);
+    background-color: rgba(235,97,35);
+    cursor: pointer;
+    border: none;
+    transition: all .2s;
+}
+
+#form-button-div button:hover {
+    scale: 1.1;
+    box-shadow: 3px 3px 5px rgba(9, 255, 0, 0.737);
+    color: rgb(213, 213, 213);
+}
+
+#form-button-div button:active {
+    scale: 1;
+    box-shadow: none;
+    opacity: .8;
+}
