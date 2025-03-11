@@ -66,13 +66,13 @@ async function onload() {
       totalSpotCounter = data.length;
       updateSpotSpan();
 
-      let baseSize = 2.2; 
-      let zoomFactor = Math.pow(1.9, 13 - zoom); 
+      let baseSize = 2; 
+      let zoomFactor = Math.pow(2, 13.2 - zoom); 
       let iconSize = baseSize * zoomFactor;
 
       // Add size limits
       let minSize = .1;
-      let maxSize = 140; // adjusted max size
+      let maxSize = 600; // adjusted max size
       iconSize = Math.max(minSize, Math.min(maxSize, iconSize));
 
 

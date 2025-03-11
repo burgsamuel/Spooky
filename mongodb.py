@@ -71,6 +71,18 @@ def remove_users_spots(username):
     spots.delete_many({"username" : username})
     client.close()
     
+
+def retrieve_user_spots(username):
+    
+    # Create a new client and connect to the server
+    client = MongoClient(url, server_api=ServerApi('1'))
+
+    database = client.get_database('halloween')
+    spots = database.get_collection('Users')
+    
+    result = spots.find_one({"username" : username})
+    
+    return int(result["total_spots"])
     
     
 #####################################################
@@ -110,7 +122,8 @@ def create_user(username, email, password):
         "email_verified" : False,
         "verification_attempts" : 0,
         "verification_code" : int(verification_code),
-        "total_spots" : int(0)
+        "total_spots" : int(0),
+        "end_timer" : 0
     }
     
     spots.insert_one(user)
@@ -119,6 +132,8 @@ def create_user(username, email, password):
     return int(verification_code)
 
 
+    
+    
 def email_verified(username):
     
     # Create a new client and connect to the server
@@ -173,7 +188,7 @@ def verification_timer(username):
         If the user fails to varify their information will be deleted '''
     
     time_start = time.time()  
-    time_end = time_start + 100  # 10 min
+    time_end = time_start + 600  # 10 min
     print(f"Starting Timer to verifiy {username}")
     while True:
         if time.time() >= time_end:
@@ -206,4 +221,71 @@ def update_user_spots(username):
         {"username" : username },
         { "$inc" : { "total_spots" : 1 }}
     )
+    client.close()
+    
+
+
+
+#####################################################
+##### Password Reset 
+#####################################################    
+    
+def password_reset_verification_code(username):
+
+        # Create a new client and connect to the server
+    client = MongoClient(url, server_api=ServerApi('1'))
+
+    database = client.get_database('halloween')
+    user = database.get_collection('Users')
+
+    verification_code = random.randint(999, 9999)
+    
+    end_time = time.time() + 600
+
+    user.update_one(
+        { "username" : username},
+        { "$set" : { "verification_code" : verification_code, "end_timer" : end_time }}
+    )
+
+    client.close()
+
+    return int(verification_code)
+
+
+def password_code_verified(username):
+    
+    '''
+        Reset counters once code is verified
+    '''
+    
+    client = MongoClient(url, server_api=ServerApi('1'))
+
+    database = client.get_database('halloween')
+    spots = database.get_collection('Users')
+    
+    spots.update_one(
+        {"username" : username},
+        { "$set" : { "verification_attempts": 0 }}
+    )
+    client.close()
+    
+
+def update_new_password(username, password):
+    
+    '''
+        Hash new password and store into the database
+    '''
+    client = MongoClient(url, server_api=ServerApi('1'))
+
+    database = client.get_database('halloween')
+    spots = database.get_collection('Users')
+    
+    unhasded_password = password.encode("utf-8")
+    hashed_password = bcrypt.hashpw(unhasded_password, bcrypt.gensalt())
+    
+    spots.update_one(
+        {"username" : username},
+        { "$set" : { "password": hashed_password }}
+    )
+    
     client.close()

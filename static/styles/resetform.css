@@ -26,6 +26,9 @@ header {
 
 h1 {
     text-shadow: 3px 3px 3px rgba(235, 98, 35, 0.748);
+    font-family: "Creepster", system-ui;
+    font-weight: 400;
+    font-style: normal;
     margin-top: 10px;
     margin-bottom: 20px;
     padding-top: 20px;
@@ -33,7 +36,6 @@ h1 {
     line-height: 1.5;
 
 }
-
 
 header button {
     border: 1px solid rgba(255, 255, 255, 0.612);
@@ -50,13 +52,38 @@ header button {
     transition: all 0.3s;
   }
   
-  header button:hover {
-    cursor: pointer;
-    background-color: rgba(0, 0, 0, 0.8);
-    box-shadow: none;
-  }
+header button:hover {
+cursor: pointer;
+background-color: rgba(0, 0, 0, 0.8);
+box-shadow: none;
+}
 
-  #verifyemail {
+#nav-button-div {
+    display: flex;
+    flex-direction: column;
+}
+
+#nav-button-div button {
+    border: 3px solid rgba(255, 255, 255, 0.612);
+    margin: 30px;
+    font-size: 2rem;
+    width: 70vw;
+    height: 100px;
+    border-radius: 50px;
+    box-shadow: 4px 4px 5px rgba(0, 0, 0, .8);
+    background-color: rgba(0, 0, 0, .94);
+    color: rgb(211, 187, 182);
+    text-shadow: 3px 3px 3px hsla(0, 1%, 55%, 0.216);
+    transition: all .3s;
+}
+
+#nav-button-div button:hover {
+    cursor: pointer;
+    background-color: rgba(0, 0, 0, .8);
+    box-shadow: none;
+}
+
+#loginform {
     width: 95%;
     background-color: rgba(0, 0, 0, 0.864);
     padding-top: 20px;
@@ -64,39 +91,63 @@ header button {
     border-radius: 10px;
     margin: 5px;
     box-shadow: 5px 5px 5px rgba(235, 98, 35, 0.442);
-    text-shadow: 3px 3px 3px rgba(235, 98, 35, 0.748)
-}
-
-#verifyemail p {
-    padding: 10px 10px;
-    text-shadow: none;
     font-family: Arial, Helvetica, sans-serif;
+    color: rgba(235, 235, 235, 0.939);
+
 }
 
-#verifyemail label {
+#loginform p {
+    margin: 10px 15px;
     text-shadow: none;
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: "Creepster", system-ui;
+    font-weight: 400;
+    font-style: normal;
 }
 
-#codefield {
-    margin: 10px;
+#usernamefield {
+    margin: 20px;
+    font-weight: 600;
+}
+#usernamefield input {
+    height: 20px;
+    padding: 10px 17px;
+    border-radius: 20px;
+    font-size: 1rem;
+    color: white;
+    background-color: rgba(0, 0, 0, .3);
+    outline: .5px solid rgba(235,97,35);
+    transition: all .5s;
+}
+
+#usernamefield input:focus {
+    border: none;
+    box-shadow: 5px 5px 5px rgba(235,97,35);
+}
+
+#emailfield {
+    margin: 20px;
     font-weight: 600;
 }
 
-
-#codefield input {
+#emailfield input {
     height: 20px;
-    padding: 10px 20px;
-    width: 100px;
+    padding: 10px 17px;
     border-radius: 20px;
     font-size: 1rem;
-    outline: none;
-    transition: all .8s;
+    color: white;
+    background-color: rgba(0, 0, 0, .3);
+    outline: .5px solid rgba(235,97,35);
+    transition: all .5s;
 }
 
-#codefield input:focus {
+#emailfield input:focus {
     border: none;
     box-shadow: 5px 5px 5px rgba(235,97,35);
+}
+
+#emailfield label {
+    margin-right: 30px;
+    margin-left: 10px;
 }
 
 #form-button-div {
