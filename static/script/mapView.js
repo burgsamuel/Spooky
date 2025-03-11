@@ -43,70 +43,34 @@ async function showPosition(position) {
 // Load points from server onto map for each user
 // ///////////////////////////////////////////////
 
-
-
 let totalSpotCounter = 0;
 
-
 async function onload() {
-  let response = await fetch("/mapData");
-  let data = await response.json();
 
+    let response = await fetch("/mapData")
+    let data = await response.json()
 
-  let pixiContainer = new PIXI.Container();
+    totalSpotCounter = data.length;
+    updateSpotSpan();
 
-  let pixiOverlay = L.pixiOverlay(function(utils) {
-      let zoom = utils.getMap().getZoom();
-      let container = utils.getContainer();
-      let renderer = utils.getRenderer();
-      let project = utils.latLngToLayerPoint;
+    for (let i = 0; i < data.length - 1; i++) {
+        let dataIconUrl = data[i].iconurl;
+        let timeof = new Date(data[i].timestamp * 1000);
+        let userIcon = L.icon({
+        iconUrl: dataIconUrl,
+        iconSize: [25, 25],
+        iconAnchor: [10, 10],
+        popupAnchor: [-3, -76],
+        });
 
-      container.removeChildren();
+    marker = new L.marker([data[i].latitude, data[i].longitude], {
+    icon: userIcon,
+    title: `User:${data[i].userid} Time:${timeof}`,
+    }).addTo(map);
+}
 
-      totalSpotCounter = data.length;
-      updateSpotSpan();
+getLocation();
 
-      let baseSize = 2; 
-      let zoomFactor = Math.pow(2, 13.2 - zoom); 
-      let iconSize = baseSize * zoomFactor;
-
-      // Add size limits
-      let minSize = .1;
-      let maxSize = 600; // adjusted max size
-      iconSize = Math.max(minSize, Math.min(maxSize, iconSize));
-
-
-      data.forEach(function(item) {
-          if (item && typeof item.lat === 'number' && typeof item.lng === 'number' && item.iconUrl) {
-              try {
-                  let latlng = L.latLng(item.lat, item.lng);
-                  let point = project(latlng);
-
-                  PIXI.Texture.fromURL(item.iconUrl).then(texture => {
-                      let sprite = new PIXI.Sprite(texture);
-
-                      sprite.anchor.set(10 / 25, 10 / 25);
-                      sprite.width = iconSize;
-                      sprite.height = iconSize;
-
-                      sprite.position.set(point.x, point.y);
-
-                      container.addChild(sprite);
-                      renderer.render(container);
-                  }).catch(error => {
-                      console.error("Error loading image:", item.iconUrl, error);
-                  });
-              } catch (error) {
-                  console.error("Error processing item:", item, error);
-              }
-          } else {
-              console.warn("Invalid data item:", item);
-          }
-      });
-
-  }, pixiContainer).addTo(map);
-
-  getLocation();
 }
 
 onload();
