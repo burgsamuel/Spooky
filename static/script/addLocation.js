@@ -10,8 +10,9 @@ let saveLocationFlag = true;
 let autoTracking = true;
 
 let spotCounter = 0;
-
+// let counter = 0;
 let wakeLock = null;
+
 
 
 //////////////////////////////////////////////////
@@ -74,14 +75,102 @@ L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
 
 
 //////////////////////////////////////////////////
+// Load Already Marked Spots
+// ///////////////////////////////////////////////
+
+async function userspots() {
+
+  let response = await fetch("/userspots")
+  let data = await response.json();
+
+  spotCounter = data.spots
+
+  if (data.spots > 0) {
+    spotCounterSpan.innerText = `Your Spots: ${data.spots}`;
+  }
+  else {
+    spotCounterSpan.innerText = 'Your Spots: 0';
+  }
+  if (spotCounter > 0) {
+    deleteButton.style.visibility = 'visible';
+  }
+
+}
+
+getLocation();
+
+async function onload() {
+  let response = await fetch("/mapData");
+  let data = await response.json();
+
+
+  let pixiContainer = new PIXI.Container();
+
+  let pixiOverlay = L.pixiOverlay(function (utils) {
+    let zoom = utils.getMap().getZoom();
+    let container = utils.getContainer();
+    let renderer = utils.getRenderer();
+    let project = utils.latLngToLayerPoint;
+
+    container.removeChildren();
+
+    totalSpotCounter = data.length;
+
+
+    let baseSize = 1.9;
+    let zoomFactor = Math.pow(2, 13.2 - zoom);
+    let iconSize = baseSize * zoomFactor;
+
+    let minSize = .1;
+    let maxSize = 700;
+    iconSize = Math.max(minSize, Math.min(maxSize, iconSize));
+
+
+    data.forEach(function (item) {
+      if (item && typeof item.lat === 'number' && typeof item.lng === 'number' && item.iconUrl) {
+        try {
+          let latlng = L.latLng(item.lat, item.lng);
+          let point = project(latlng);
+
+          PIXI.Texture.fromURL(item.iconUrl).then(texture => {
+            let sprite = new PIXI.Sprite(texture);
+
+            sprite.anchor.set(10 / 25, 10 / 25);
+            sprite.width = iconSize;
+            sprite.height = iconSize;
+
+            sprite.position.set(point.x, point.y);
+
+            container.addChild(sprite);
+            renderer.render(container);
+          }).catch(error => {
+            console.error("Error loading image:", item.iconUrl, error);
+          });
+        } catch (error) {
+          console.error("Error processing item:", item, error);
+        }
+      } else {
+        console.warn("Invalid data item:", item);
+      }
+    });
+
+  }, pixiContainer).addTo(map);
+  userspots();
+
+}
+
+onload();
+
+
+//////////////////////////////////////////////////
 // Load user location
 // ///////////////////////////////////////////////
 
 function getLocation() {
 
-    statusSpan.innerText = "Locating you - Stand outside for best results "
+  statusSpan.innerText = "Locating you - Stand outside for best results "
 
-    autoTracking = true;
+  autoTracking = true;
 
   if (navigator.geolocation) {
     id = navigator.geolocation.watchPosition(showPosition);
@@ -107,7 +196,7 @@ async function showPosition(position) {
 
   try {
     map.removeLayer(marker_new);
-  } catch {}
+  } catch { }
 
   let newIcon = L.icon({
     iconUrl: userIconUrl,
@@ -117,9 +206,8 @@ async function showPosition(position) {
   });
   marker_new = new L.marker([lat, lon], {
     icon: newIcon,
-    title: `${userId}`,
   }).addTo(map);
-      statusSpan.innerText = "If Location is **NOT** correct click the map in the correct spot'"
+  statusSpan.innerText = "If Location is **NOT** correct click the map in the correct spot'"
 }
 
 getLocation();
@@ -134,158 +222,109 @@ function iconSelect(imageId) {
   for (let i = 0; i < iconArray.length; i++) {
     if (iconArray[i].name == imageId) {
 
-        iconName = iconArray[i].name;
-        let iconSelected = document.getElementById(iconArray[i].name);
-        iconSelected.style.backgroundColor = "red";
+      iconName = iconArray[i].name;
+      let iconSelected = document.getElementById(iconArray[i].name);
+      iconSelected.style.backgroundColor = "red";
 
     } else {
-        let iconUnSelected = document.getElementById(iconArray[i].name);
-        iconUnSelected.style.backgroundColor = "rgba(250, 250, 250, 0)";
+      let iconUnSelected = document.getElementById(iconArray[i].name);
+      iconUnSelected.style.backgroundColor = "rgba(250, 250, 250, 0)";
     }
   }
 }
 
 
-
-
-//////////////////////////////////////////////////
-// Load a user id if not already loaded
-// ///////////////////////////////////////////////
-
-let userId = null;
-
-if (localStorage.getItem("id343445432") == null) {
-  userId = generateId();
-  localStorage.setItem("id343445432", JSON.stringify(userId));
-} else {
-  userId = JSON.parse(localStorage.getItem("id343445432"));
-}
-
-function generateId() {
-  const id = Math.floor(Math.random() * 999999999999);
-  return id;
-}
-
-
-
-//////////////////////////////////////////////////
-// Updating total Spots and display
-// ///////////////////////////////////////////////
-
-
-function spotCounterAdd() {
-
-  // Keeping track of total spots for each user
-  if (localStorage.getItem("spotCounter") == null) {
-    localStorage.setItem("spotCounter", JSON.stringify(spotCounter));
-    spotCounter++;
-    localStorage.setItem("spotCounter", JSON.stringify(spotCounter));
-  } else {
-    spotCounter = JSON.parse(localStorage.getItem("spotCounter"));
-    spotCounter++;
-    localStorage.setItem("spotCounter", JSON.stringify(spotCounter));
-  }
-
-}
-
-function updateSpotSpan(){
-
-  if (localStorage.getItem("spotCounter") == null) {
-    localStorage.setItem("spotCounter", JSON.stringify(spotCounter));
-  } 
-  else {
-    let counter = JSON.parse(localStorage.getItem("spotCounter"));
-
-    if (counter > 0) {
-      spotCounterSpan.innerText = `Your Spots: ${counter}`;
-    }
-    else {
-      spotCounterSpan.innerText = '';
-    }
-  }
-
-}
-
-updateSpotSpan();
 
 //////////////////////////////////////////////////
 // Saving the Users Location
 // ///////////////////////////////////////////////
 
 async function saveLocation() {
-  
-  
+
+
   if (saveLocationFlag && lat !== null && lon !== null) {
-    
-    saveLocationButton.textContent ="Saving"
+
+    saveLocationButton.textContent = "Saving"
     // Set icon name and url for database
     for (let i = 0; i < iconArray.length; i++) {
       if (iconArray[i].name == iconName) {
         userIconUrl = iconArray[i].url;
       }
     }
-  
+
     try {
       // Create request to api
       const req = await fetch('/locationData', {
-          method: 'POST',
-          headers: { 'Content-Type':'application/json' },
-          
-          // data
-          body: JSON.stringify({
-              id: userId,
-              time_stamp: timeStamp,
-              lat: lat,
-              lon: lon,
-              iconUrl: userIconUrl,
-          }),
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+
+        // data
+        body: JSON.stringify({
+          time_stamp: Date.now(),
+          lat: lat,
+          lng: lon,
+          iconUrl: userIconUrl,
+        }),
       });
-      
+
       const res = await req.json();
-  
+
       // Log success message
-      saveLocationButton.textContent =" Saved 👍"  
-      setTimeout(() => {
-        saveLocationButton.textContent ="Save My Spot" 
-        saveLocationFlag = true;
-      }, 4000)
-      setTimeout(() => {
-        statusSpan.innerText = `Click View Map at the top for locations` 
-      }, 3000)
-      statusSpan.innerText = `${res.Status}`          
+
+      if (res.Failed) {
+        saveLocationButton.textContent = " Login First ";
+        alert("Please Login/Register to use this feature!")
+        setTimeout(() => {
+          saveLocationButton.textContent = "Save My Spot";
+          saveLocationFlag = true;
+        }, 30000)
+        setTimeout(() => {
+          statusSpan.innerText = `Click View Map at the top for locations`;
+        }, 5000)
+      }
+      else {
+        saveLocationButton.textContent = " Saved 👍"
+        setTimeout(() => {
+          saveLocationButton.textContent = "Save My Spot"
+          saveLocationFlag = true;
+        }, 4000)
+        setTimeout(() => {
+          statusSpan.innerText = `Click View Map at the top for locations`
+        }, 3000)
+        statusSpan.innerText = `${res.Status}`
+      }
+
 
 
       //persist icon on saved locations
-      let newIcon = L.icon({
-        iconUrl: userIconUrl,
-        iconSize: [25, 25],
-        iconAnchor: [10, 10],
-        popupAnchor: [-3, -76],
-      });
-      savedMarker = new L.marker([lat, lon], {
-        icon: newIcon,
-        title: `${userId}`,
-      }).addTo(map);
+      if (!res.Failed) {
+        let newIcon = L.icon({
+          iconUrl: userIconUrl,
+          iconSize: [25, 25],
+          iconAnchor: [10, 10],
+          popupAnchor: [-3, -76],
+        });
+        savedMarker = new L.marker([lat, lon], {
+          icon: newIcon,
+          title: "this",
+        }).addTo(map);
 
+
+      }
       popup.removeFrom(map);
 
-      // Udpating to spot counters for user to see;
-      spotCounterAdd();
-      updateSpotSpan();
+      // spotCounterSpan.innerText = `Your Spots: ${totalSpotCounter += 1}`;
 
-      if (spotCounter > 0) {
-        deleteButton.style.visibility = 'visible';
-      }
-      
+      spotCounterSpan.innerText = `Your Spots: ${spotCounter += 1}`;
 
-  } catch(err) {
+    } catch (err) {
       console.error(`ERROR: ${err}`);
+    }
   }
-  }
-  else{
-    saveLocationButton.textContent ="Please Wait";
+  else {
+    saveLocationButton.textContent = "Please Wait";
     setTimeout(() => {
-    saveLocationButton.textContent ="Save My Spot";
+      saveLocationButton.textContent = "Save My Spot";
     }, 3000)
 
   }
@@ -305,18 +344,18 @@ let popup = L.popup();
 
 function onMapClick(e) {
 
-    navigator.geolocation.clearWatch(id);
-    autoTracking = false;
-    trackerButton.textContent = "Auto Tracking OFF/on"
-    statusSpan.innerText = "AUTO Tracking is OFF, manually add your location"
+  navigator.geolocation.clearWatch(id);
+  autoTracking = false;
+  trackerButton.textContent = "Auto Tracking OFF/on"
+  statusSpan.innerText = "AUTO Tracking is OFF, manually add your location"
 
-    popup
-        .setLatLng(e.latlng)
-        .setContent("If you are Happy with this location Click Save My Spot below")
-        .openOn(map);
-        lat = e.latlng.lat
-        lon = e.latlng.lng
-        addMarker(lat, lon);
+  popup
+    .setLatLng(e.latlng)
+    .setContent("If you are Happy with this location Click Save My Spot below")
+    .openOn(map);
+  lat = e.latlng.lat
+  lon = e.latlng.lng
+  addMarker(lat, lon);
 }
 
 map.on('click', onMapClick);
@@ -339,7 +378,7 @@ function addMarker(lat, lon) {
 
   try {
     map.removeLayer(marker_new);
-  } catch {}
+  } catch { }
 
   let newIcon = L.icon({
     iconUrl: userIconUrl,
@@ -349,7 +388,7 @@ function addMarker(lat, lon) {
   });
   marker_new = new L.marker([lat, lon], {
     icon: newIcon,
-    title: `${userId}`,
+    title: "this",
   }).addTo(map);
 }
 
@@ -384,58 +423,60 @@ function autoButton() {
 
 
 //////////////////////////////////////////////////
-// delete Button Functions 
+// Delete Button Functions 
 // ///////////////////////////////////////////////
 
-setTimeout(()=>{
+setTimeout(() => {
 
-  let spotting = JSON.parse(localStorage.getItem("spotCounter"));
+  let spotting = spotCounter;
 
   if (spotting > 0) {
     deleteButton.style.visibility = 'visible';
   }
-},2000);
+}, 2000);
 
 
-async function deleteSpots(){
+async function deleteSpots() {
 
 
 
-    let answer = prompt("Type: 'YES' to confirm DELETE");
+  let answer = prompt("Type: 'YES' to confirm DELETE");
 
-    if (answer.trim().toUpperCase() === 'YES'){
+  if (answer.trim().toUpperCase() === 'YES') {
 
-          deleteButton.textContent = "Deleting";
+    deleteButton.textContent = "Deleting";
 
-          // Create request to api
-          const req = await fetch('/RemoveUserSpots', {
-            method: 'POST',
-            headers: { 'Content-Type':'application/json' },
-            // data
-            body: JSON.stringify({
-                id: userId,
-            }),
-        });
-        
-        const response = await req.json();
-        deleteButton.textContent = "Spots Deleted";
-      
-        setTimeout(() => {
-          deleteButton.textContent = "Remove My Spots";   
-          deleteButton.style.visibility = 'hidden';
-        }, 5000);
-      
-        localStorage.setItem("spotCounter", JSON.stringify(0));
-        spotCounterSpan.innerText = `Your Spots: 0`;
-        map.removeLayer(marker_new);
+    // Create request to api
+    const req = await fetch('/RemoveUserSpots', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      // data
+      body: JSON.stringify({
+        id: "Request delete",
+      }),
+    });
 
-        map.removeLayer(savedMarker);
-    }
+    const response = await req.json();
+    deleteButton.textContent = "Spots Deleted";
+
+    setTimeout(() => {
+      deleteButton.textContent = "Remove My Spots";
+      deleteButton.style.visibility = 'hidden';
+    }, 5000);
+
+
+    spotCounterSpan.innerText = `Your Spots: 0`;
+
+    location.reload()
+
+  }
 }
 
 
 
-
+//////////////////////////////////////////////////
+// Try and Keep Screen Awake
+// ///////////////////////////////////////////////
 
 async function keepScreenOn() {
 
@@ -449,3 +490,8 @@ async function keepScreenOn() {
 }
 
 keepScreenOn();
+
+
+
+
+
