@@ -1,0 +1,199 @@
+body {
+  margin: 0;
+  font-family: "Creepster", system-ui;
+  font-weight: 400;
+  font-style: normal;
+  text-align: center;
+  color: rgba(231, 231, 231, 0.911);
+  background-image: url(395656.jpg);
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+header {
+  text-align: start;
+  backdrop-filter: blur(30px);
+}
+
+header button {
+  border: 1px solid rgba(255, 255, 255, 0.612);
+  margin: 3px;
+  margin-left: 5px;
+  font-size: 0.8rem;
+  width: 100px;
+  height: 30px;
+  border-radius: 20px;
+  box-shadow: 4px 4px 5px rgba(0, 0, 0, 0.8);
+  background-color: rgba(0, 0, 0, 0.94);
+  color: rgb(227, 226, 226);
+  text-shadow: 3px 3px 3px hsla(0, 1%, 55%, 0.216);
+  transition: all 0.3s;
+}
+
+header button:hover {
+  cursor: pointer;
+  background-color: rgba(0, 0, 0, 0.8);
+  box-shadow: none;
+}
+
+#delete-button {
+  border: 1px solid rgba(255, 255, 255, 0.612);
+  font-size: 0.8rem;
+  width: 123px;
+  height: 30px;
+  padding: 0;
+  border-radius: 20px;
+  box-shadow: 4px 4px 5px rgba(0, 0, 0, 0.8);
+  background-color: rgba(66, 14, 14, 0.94);
+  color: rgb(227, 226, 226);
+  text-shadow: 3px 3px 3px hsla(0, 1%, 55%, 0.216);
+  transition: all 0.3s;
+  z-index: 2;
+  position: absolute;
+  top: 3px;
+  left: 155px;
+}
+
+#delete-button:hover {
+  cursor: pointer;
+  background-color: rgba(0, 0, 0, 0.8);
+  box-shadow: none;
+}
+
+#counter-div {
+  backdrop-filter: blur(70px);
+  font-family: Arial, Helvetica, sans-serif;
+  border-radius: 10px;
+  padding: 5px;
+  width: 200px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#spot-counter-span {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+
+#map {
+  z-index: 1;
+  height: 50vh;
+  margin: 10px;
+  border-radius: 10px;
+  box-shadow: 4px 4px 5px rgba(0, 0, 0, 0.8);
+}
+
+#autoButtonDiv{
+  z-index: 2;
+  position: absolute;
+  top: 60px;
+  left: 55px;
+}
+
+#tacker-button {
+  border: 1px solid rgba(255, 255, 255, 0.612);
+  margin: 3px;
+  margin-left: 10px;
+  font-size: 0.8rem;
+  padding-left: 10px;
+  padding-right: 10px;
+  height: 30px;
+  border-radius: 20px;
+  box-shadow: 4px 4px 5px rgba(0, 0, 0, 0.8);
+  background-color: rgba(0, 0, 0, 0.94);
+  color: rgb(227, 226, 226);
+  text-shadow: 3px 3px 3px hsla(0, 1%, 55%, 0.216);
+  transition: all 0.3s;
+}
+
+#tacker-button:hover {
+  cursor: pointer;
+  background-color: rgba(0, 0, 0, 0.8);
+  box-shadow: none;
+}
+
+#icon-div {
+  backdrop-filter: blur(30px);
+  border-radius: 10px;
+  margin: 10px;
+  box-shadow: 4px 4px 5px rgba(76, 76, 76, 0.526);
+}
+
+.icon-p {
+  margin: 0;
+  padding: 5px;
+  color: aliceblue;
+  font-weight: 600;
+}
+
+.icon-p span {
+  font-weight: 500;
+  font-size: .7rem;
+}
+
+.icon-select {
+  height: 30px;
+  width: 30px;
+  margin: 5px 4px;
+  border-radius: 5px;
+  padding: 3px;
+}
+
+#location-buttons-div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.location-button-class {
+  height: 40px;
+  width: 180px;
+  font-weight: 600;
+  font-size: 1rem;
+  margin: 5px;
+  border: 1px solid black;
+  padding: 7px 10px;
+  border-radius: 40px;
+  color: azure;
+  background-color: hsla(0, 88%, 39%, 0.908);
+  box-shadow: 4px 4px 10px rgba(235, 98, 35, 0.748);
+  transition: all .3s;
+}
+
+.location-button-class:hover {
+  box-shadow: none;
+  cursor: pointer;
+  background-color: hsla(0, 88%, 39%, 0.808);
+}
+
+.label-p {
+  margin: 0;
+  color: aliceblue;
+  font-weight: 600;
+  backdrop-filter: blur(20px);
+  padding: 5px 15px;
+  border-radius: 50px;
+}
+
+.label-p span {
+  font-weight: 500;
+  font-size: .7rem;
+}
+
+#status-p {
+  color: aliceblue;
+  font-weight: 600;
+  backdrop-filter: blur(20px);
+  padding: 5px;
+}
+
+#status-span {
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: 500;
+  font-size: .7rem;
+  margin-left: 10px;
+}
