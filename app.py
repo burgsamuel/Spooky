@@ -219,8 +219,12 @@ def registration_post():
     
     # Check if User already exsists
     user = mongodb.check_user_exsists(username)
+    email_exsists = mongodb.check_user_email(email)
     if user is not None:
         flash("Username Already Taken!")
+        return render_template("login/register.html")
+    if email_exsists is not None:
+        flash("Email Already Registered!")
         return render_template("login/register.html")
     else:
         verification_code = mongodb.create_user(username, email, password)
@@ -385,5 +389,5 @@ def store_new_password():
 ########################################################
 
 if __name__ == "__main__":
-    app.run()
-    # app.run(debug=True, host="0.0.0.0")
+    # app.run()
+    app.run(debug=True, host="0.0.0.0")

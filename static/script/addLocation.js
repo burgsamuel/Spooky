@@ -64,7 +64,7 @@ let id; // geolocation id
 // Setup Map
 // ///////////////////////////////////////////////
 
-const map = L.map("map").setView([-30.000, 135.0000], 15);
+const map = L.map("map").setView([-30.000, 135.0000], 4);
 
 L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
   maxZoom: 19,
@@ -112,6 +112,7 @@ async function onload() {
     let renderer = utils.getRenderer();
     let project = utils.latLngToLayerPoint;
 
+    renderer.plugins.interaction.autoPreventDefault = false;
     container.removeChildren();
 
     totalSpotCounter = data.length;
@@ -155,11 +156,17 @@ async function onload() {
     });
 
   }, pixiContainer).addTo(map);
+
   userspots();
-  getLocation();
+
 }
 
-onload();
+getLocation();
+
+setTimeout( () => {
+  onload();
+}, 4000);
+
 
 
 //////////////////////////////////////////////////
@@ -185,7 +192,7 @@ async function showPosition(position) {
 
   timeStamp = position.timestamp / 1000;
 
-  map.flyTo(new L.LatLng(lat, lon), 17);
+  map.flyTo(new L.LatLng(lat, lon), 16);
 
 
   for (let i = 0; i < iconArray.length; i++) {
@@ -210,7 +217,7 @@ async function showPosition(position) {
   statusSpan.innerText = "If Location is **NOT** correct click the map in the correct spot'"
 }
 
-getLocation();
+
 
 
 
@@ -313,8 +320,6 @@ async function saveLocation() {
       }
       popup.removeFrom(map);
 
-      // spotCounterSpan.innerText = `Your Spots: ${totalSpotCounter += 1}`;
-
       spotCounterSpan.innerText = `Your Spots: ${spotCounter += 1}`;
 
     } catch (err) {
@@ -344,22 +349,22 @@ let popup = L.popup();
 
 function onMapClick(e) {
 
-  navigator.geolocation.clearWatch(id);
-  autoTracking = false;
-  trackerButton.textContent = "Auto Tracking OFF/on"
-  statusSpan.innerText = "AUTO Tracking is OFF, manually add your location"
+    navigator.geolocation.clearWatch(id);
+    autoTracking = false;
+    trackerButton.textContent = "Auto Tracking OFF/on"
+    statusSpan.innerText = "AUTO Tracking is OFF, manually add your location"
 
-  popup
-    .setLatLng(e.latlng)
-    .setContent("If you are Happy with this location Click Save My Spot below")
-    .openOn(map);
-  lat = e.latlng.lat
-  lon = e.latlng.lng
-  addMarker(lat, lon);
+    popup
+        .setLatLng(e.latlng)
+        .setContent("If you are Happy with this location Click Save My Spot below")
+        .openOn(map);
+        lat = e.latlng.lat
+        lon = e.latlng.lng
+        addMarker(lat, lon);
 }
 
 map.on('click', onMapClick);
-
+map.on('touchstart', onMapClick);
 
 
 //////////////////////////////////////////////////
@@ -426,14 +431,7 @@ function autoButton() {
 // Delete Button Functions 
 // ///////////////////////////////////////////////
 
-setTimeout(() => {
 
-  let spotting = spotCounter;
-
-  if (spotting > 0) {
-    deleteButton.style.visibility = 'visible';
-  }
-}, 2000);
 
 
 async function deleteSpots() {

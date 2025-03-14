@@ -102,6 +102,19 @@ def check_user_exsists(username):
     return result
 
 
+def check_user_email(email):
+    
+    # Create a new client and connect to the server
+    client = MongoClient(url, server_api=ServerApi('1'))
+
+    database = client.get_database('halloween')
+    spots = database.get_collection('Users')
+    
+    result = spots.find_one({"email" : email})
+    
+    return result
+
+
 def create_user(username, email, password):
     
     # Create a new client and connect to the server

@@ -2,7 +2,7 @@
 // Setup Map
 // ///////////////////////////////////////////////
 
-const map = L.map("map").setView([-30.000, 135.0000], 15);
+const map = L.map("map").setView([-30.000, 135.0000], 4);
 
 L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
   maxZoom: 20,
@@ -32,7 +32,7 @@ async function showPosition(position) {
 
   timeStamp = position.timestamp / 1000;
 
-  map.flyTo(new L.LatLng(lat, lon), 15);
+  map.setView(new L.LatLng(lat, lon), 15);
 
 
 }

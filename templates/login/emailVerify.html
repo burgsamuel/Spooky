@@ -48,4 +48,12 @@
   </form>
 </body>
 
+<script>
+  const submitButton = document.getElementById("submitbutton");
+
+  function onSubmitClick(){
+    submitButton.innerText = "Loading!"
+  };
+  submitButton.addEventListener("click", onSubmitClick);
+</script>
 </html>

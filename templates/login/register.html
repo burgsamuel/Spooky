@@ -64,6 +64,13 @@
 
 </body>
 <script>
+  const submitButton = document.getElementById("submitbutton");
+
+  function onSubmitClick(){
+    submitButton.innerText = "Loading!"
+  };
+  submitButton.addEventListener("click", onSubmitClick);
+
   const passwordBox = document.getElementById('password')
   const passwordcheck = document.getElementById('passwordcheck')
   const retypeSpan = document.getElementById('retype-password-span')
