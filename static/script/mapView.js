@@ -32,7 +32,7 @@ async function showPosition(position) {
 
   timeStamp = position.timestamp / 1000;
 
-  map.setView(new L.LatLng(lat, lon), 15);
+  map.flyTo(new L.LatLng(lat, lon), 15);
 
 
 }
@@ -66,7 +66,7 @@ async function onload() {
       totalSpotCounter = data.length;
       updateSpotSpan();
 
-      let baseSize = 2; 
+      let baseSize = 1.9; 
       let zoomFactor = Math.pow(2, 13.2 - zoom); 
       let iconSize = baseSize * zoomFactor;
 
@@ -106,11 +106,12 @@ async function onload() {
 
   }, pixiContainer).addTo(map);
 
-  getLocation();
 }
+getLocation();
 
-onload();
-
+setTimeout( () => {
+  onload();
+}, 3200);
 
 
 //////////////////////////////////////////////////

@@ -165,7 +165,7 @@ getLocation();
 
 setTimeout( () => {
   onload();
-}, 4000);
+}, 3200);
 
 
 
